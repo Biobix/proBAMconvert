@@ -22,7 +22,8 @@ __author__ = 'Volodimir Olexiouk'
 
 import time
 import pysam
-import pysam.ctabixproxies
+# the import below is needed in the OSX version
+# import pysam.libctabixproxies
 import proBAM_input
 import proBAM_ENSEMBL
 import sys
@@ -43,10 +44,8 @@ except ImportError:
 cogent
 pysam
 mySQLdb
-SQLAlchemy
 lxml
 numpy
-matplotlib
 pyteomics
 '''
 #
@@ -144,51 +143,6 @@ def get_input_variables():
             "pre picked annotation                          " + str(pre_picked_annotation)+"\n"+
             "conversion_mode:                               " + str(conversion_mode))
 
-
-'''
-###############################
-# NON COMMAND LINE ARGUMENTS  #
-# FOR TESTING PURPOSES        #
-###############################
-
-directory="/home/vladie/Desktop/proBAMconvert/output/"
-psm_file="/home/vladie/Desktop/proBAMconvert/PXD000652.mzid"
-species="homo_sapiens"
-database='ENSEMBL'
-database_v=87
-# TODO Let users specify used the decoy annotation
-decoy_annotation=['REV_','DECOY_','_REVERSED','REVERSED_','_DECOY']
-allowed_mismatches=0
-version='1.0'
-# can be unknown,unsorted, queryname or coordinate, can be specified by user
-sorting_order='unknown'
-name='test4'
-three_frame_translation='N'
-rm_duplicates="Y"
-probed='N'
-comments=''
-include_unmapped='N'
-pre_picked_annotation="all"
-conversion_mode='proBAM_psm'
-
-command_line= "python proBAM.py --name "+str(name)+" --mismatches "+str(allowed_mismatches)+" --version "+str(database_v)\
-              +" --database "+str(database)+" --species "+str(species)+" --file "+str(psm_file)+\
-              " --directory "+str(directory)+" --rm_duplicates "+str(rm_duplicates)+\
-              " --tri_frame_translation "+str(three_frame_translation+
-              "--pre_picked_annotation "+str(pre_picked_annotation)+" --conversion_mode "+str(conversion_mode))
-
-# ouput variables
-print(  "psm file:                                      " + str(psm_file) +"\n"+
-        "directory:                                     " + str(directory) +"\n"+
-        "database                                       " + str(database) +"\n"+
-        "database version:                              " + str(database_v) +"\n"+
-        "species:                                       " + str(species) +"\n"+
-        "allowed mismatches:                            " + str(allowed_mismatches)+"\n"+
-        "three_frame_translation:                       " + str(three_frame_translation)+"\n"+
-        "remove duplicates:                             " + str(rm_duplicates)+"\n"+
-        "pre picked annotation:                         " + str(pre_picked_annotation)+"\n"+
-        "include_unmapped:                              " + str(include_unmapped))
-'''
 #######################
 ### GETTERS/SETTERS ###
 #######################
@@ -247,7 +201,6 @@ def PSM2SAM(psm_hash,transcript_hash,exon_hash,decoy_annotation,allowed_mismatch
     current_psm=1
     percentage=5
     to_write=[]
-    print('total psm_2B_processed:', len(psm_hash))
     for psm in psm_hash:
         # track progress
         current_psm+=1
@@ -703,10 +656,11 @@ def sam_2_bam(directory,name):
     bam.close()
 
     # Pysam v 0.8.4.:
-    pysam.sort((directory + name + '.bam'), (directory + name + '.sorted'))
+    #pysam.sort((directory + name + '.bam'), (directory + name + '.sorted'))
 
     # For new pysam version, has error for bigger files
-    # pysam.sort("-o",(directory+name+'.sorted.bam'),(directory+name+'.bam'))
+    pysam.sort("-o",(directory+name+'.sorted.bam'),(directory+name+'.bam'))
+    time.sleep(5)
     pysam.index(directory+name+'.sorted.bam')
 #
 # function to calculate and adjust NH for every peptide

@@ -34,7 +34,6 @@ def _get_ensembl_archive_(version,species):
         return 'plants.ensembl.org'
     else:
         d={}
-        #TODO www.ensembl.org biomart is not working, fix this for later when it's back online
         d[87]="www.ensembl.org"
         d[86]="oct2016.archive.ensembl.org"
         d[85]="jul2016.archive.ensembl.org"
