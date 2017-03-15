@@ -252,7 +252,7 @@ def PSM2SAM(psm_hash,transcript_hash,exon_hash,decoy_annotation,allowed_mismatch
         # track progress
         current_psm+=1
         if float(current_psm*100)/float(total_psms) > percentage:
-            print("%s%" % percentage)
+            print("%s%%" % percentage)
             percentage += 5
         # update window if in GUI
         if gui != None:
