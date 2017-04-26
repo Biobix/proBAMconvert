@@ -170,6 +170,9 @@ def id_map_ensembl(to_annotation,version,species,psm_protein_id):
         result=id_map_ensembl_plants(to_annotation,version,species,psm_protein_id)
         return result
     else:
+        #adjust UniProt xml annotation for BioMart version >87
+        if int(version)>87 and "uniprot" in to_annotation:
+            to_annotation=to_annotation.replace('_','')
         #create connection
         query_string=_id_in_xml_query_(psm_protein_id)
         version=_get_ensembl_archive_(version,species)
@@ -194,7 +197,6 @@ def id_map_ensembl(to_annotation,version,species,psm_protein_id):
             print "ERROR: could not convert ID's trough BioMart, " \
                   "Please check whether Ensembl version/species were correctly supplied"
         tmp_result=tmp_result.split("\n")
-
         result=[]
         if tmp_result!=[]:
             for i in tmp_result:
