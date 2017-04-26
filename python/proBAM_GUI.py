@@ -122,9 +122,9 @@ def _getDatabaseVersion_(tk):
     global database_v
     Label(text='Select database version',background="#f2f2f2",width=30,anchor=W).grid(row=5,column=0)
     database_v= StringVar(tk)
-    database_v.set('87')
+    database_v.set('88')
 
-    menu=OptionMenu(tk,database_v,'87','86','85','84','83','82','81','80','79','78','77','76',
+    menu=OptionMenu(tk,database_v,'88','87','86','85','84','83','82','81','80','79','78','77','76',
                                     '75','74')
     menu.config(width=15,background="#f2f2f2")
     menu.grid(row=5,column=1)
@@ -199,11 +199,13 @@ def _get_global_arguments_():
     global pre_picked_annotation
     global three_frame_translation
     global include_unmapped
+    global validated_only
 
     comments=[]
     decoy_annotation=['REV_','DECOY_','_REVERSED','REVERSED_','_DECOY']
-    version='1.0'
+    version='1.0.1'
     include_unmapped='Y'
+    validated_only='Y'
     three_frame_translation="N"
     # can be unknown,unsorted, queryname or coordinate, can be specified by user
     sorting_order='unknown'
@@ -306,6 +308,16 @@ def _pre_picked_annotation(tk):
     menu.config(width=15, background="#f2f2f2")
     menu.grid(row=3,column=1)
 
+def _validated_only_(tk):
+    global new_validated_only
+    Label(tk, text="validated_only (MZidentMl)", background="#f2f2f2", width=30, anchor=W).grid(row=7, column=0)
+    new_validated_only = StringVar(tk)
+    new_validated_only.set("Y")
+    menu = OptionMenu(tk, new_validated_only, "Y", "N")
+    menu.config(width=15)
+    menu.config(width=15, background="#f2f2f2")
+    menu.grid(row=7, column=1)
+
 def _save_and_exit_(top):
     global sorting_order
     global decoy_annotation
@@ -313,6 +325,7 @@ def _save_and_exit_(top):
     global pre_picked_annotation
     global include_unmapped
     global three_frame_translation
+    global validated_only
     if new_three_frame_translation.get()=='Y':
         three_frame_translation='Y'
     if new_sorting_order.get()!='':
@@ -325,6 +338,8 @@ def _save_and_exit_(top):
         pre_picked_annotation=new_pre_picked_annotation.get()
     if new_include_unmapped.get()=='N':
         include_unmapped='N'
+    if new_validated_only.get()=='N':
+        validated_only='N'
     top.destroy()
 
 def _open_advanced_settings_():
@@ -343,6 +358,7 @@ def _open_advanced_settings_():
     _comments_(top)
     _get3frame_(top)
     _pre_picked_annotation(top)
+    _validated_only_(top)
 
     # create partial save and exit for tk
     save_and_exit_argumented = partial(_save_and_exit_, top)
@@ -358,21 +374,22 @@ def _open_advanced_settings_():
 #
 
 def _print_arguments_():
-    print 'directory used:          '+directory
-    print 'PSM file:                '+psm_file
-    print 'species:                 '+species.get().replace(' ','_')
-    print 'database:                '+database.get().upper()
-    print 'database version:        '+str(int(database_v.get()))
-    print 'decoy annotation:        '+str(decoy_annotation)
-    print 'allowed mismatches:      '+str(int(allowed_mismatches.get()))
-    print 'proBAMconvert version:   '+str(version)
-    print 'sorting order:           '+ sorting_order
-    print 'project name:            '+str(name.get())
-    print 'remove duplicate PSMs:   '+rm_duplicates.get()
-    print '3-frame translation:     '+three_frame_translation
-    print 'conversion mode:         '+conversion_mode.get()
-    print 'pre picked annotation:   '+pre_picked_annotation
-    print 'include unmapped PSMs:   '+include_unmapped
+    print 'directory used:             '+directory
+    print 'PSM file:                   '+psm_file
+    print 'species:                    '+species.get().replace(' ','_')
+    print 'database:                   '+database.get().upper()
+    print 'database version:           '+str(int(database_v.get()))
+    print 'decoy annotation:           '+str(decoy_annotation)
+    print 'allowed mismatches:         '+str(int(allowed_mismatches.get()))
+    print 'proBAMconvert version:      '+str(version)
+    print 'sorting order:              '+ sorting_order
+    print 'project name:               '+str(name.get())
+    print 'remove duplicate PSMs:      '+rm_duplicates.get()
+    print '3-frame translation:        '+three_frame_translation
+    print 'conversion mode:            '+conversion_mode.get()
+    print 'pre picked annotation:      '+pre_picked_annotation
+    print 'include unmapped PSMs:      '+include_unmapped
+    print 'validated only (MZidentMl): '+validated_only
 
 #
 # Execute proBAMconvert
@@ -404,13 +421,14 @@ def execute_proBAM(root):
                        + " --database " + str(database.get().upper()) + " --species " + str(species.get().replace(' ','_')) + " --file " + str(psm_file) + \
                        " --directory " + str(directory) + " --rm_duplicates " + str(rm_duplicates.get()) + \
                        " --tri_frame_translation " + \
-                       str(three_frame_translation+" --pre_picked_annotation "+pre_picked_annotation) +\
+                       str(three_frame_translation+" --pre_picked_annotation "+pre_picked_annotation) + \
+                       " --validated_only " + str(validated_only) +\
                        " --include_unmapped "+str(include_unmapped)
         print '\n'
 
 
         # hash PSM_DATA and define variables
-        psm_hash=proBAM_input.get_PSM_hash(psm_file,decoy_annotation)
+        psm_hash=proBAM_input.get_PSM_hash(psm_file,decoy_annotation,validated_only)
         parse_results=proBAM_IDparser.parseID(psm_hash,species.get().replace(' ','_'),
                                            database.get().upper(),decoy_annotation,int(database_v.get()),
                                             three_frame_translation,pre_picked_annotation)
@@ -513,7 +531,7 @@ def GUI():
     _getAllowedMismatches_(root)
     _advanced_settings_(root)
     _manual_(root)
-    Label(text='proBAMconvert v1.0.0', pady=5, background="#f2f2f2").grid(row=12, columnspan=2)
+    Label(text='proBAMconvert v'+version, pady=5, background="#f2f2f2").grid(row=12, columnspan=2)
     execute_proBAM_argumented=partial(execute_proBAM,root)
     global proBam_button
     proBam_button=Button(text='Convert',fg="#0099cc",command=lambda:

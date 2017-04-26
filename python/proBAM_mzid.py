@@ -25,7 +25,7 @@ import re
 # Parse mzid file into dictionairy
 #
 
-def get_PSM_mzid(psm_file):
+def get_PSM_mzid(psm_file,validated_only):
     '''
     :param psm_file: mzid file
     :return: dictionairy of parsed mzid file, suitable for proBAMconvert
@@ -46,7 +46,7 @@ def get_PSM_mzid(psm_file):
                 row['spectrumID']='ms_run['+str(spectraData_ref[row['spectraData_ref']])+']:'+row['spectrumID']
             temp_hash={"assumed_charge":row['SpectrumIdentificationItem'][0]['chargeState'],"spectrum":row['spectrumID'],"search_hit":[]}
             for psm in row["SpectrumIdentificationItem"]:
-                if psm['passThreshold']==True:
+                if psm['passThreshold']==True or validated_only=="N":
                     proteins=[]
                     massdiff=_cal_massdiff_(psm['experimentalMassToCharge'],psm['calculatedMassToCharge'])
                     for protein in psm["PeptideEvidenceRef"]:

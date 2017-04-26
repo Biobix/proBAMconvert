@@ -149,10 +149,6 @@ def calculate_genome_position(phit,strand,offset,start_exon_rank,peptide,exons,c
     if three_frame_translation!='Y':
         temp_offset=offset-shift
     temp_exons=exons
-    #get start exon rank:
-    for exon in temp_exons:
-        if str(exon[0])==str(start_exon_rank):
-            print exon[2]
     if three_frame_translation=='Y':
         if strand=='1':
             tr_pos=(phit)

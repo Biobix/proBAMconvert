@@ -18,6 +18,7 @@
 from cogent.core.genetic_code import DEFAULT as standard_code
 import proBAM_biomart
 import MySQLdb
+import time
 
 
 #
@@ -116,14 +117,17 @@ def prepareAnnotationENSEMBL(psm_protein_id,mode,database_v,species,three_frame_
             cur.execute(sql)
 
         for row in cur.fetchall():
+
             transcript_ids.append(row[2])
-            psm_protein_id[row[id]] = {'transcript_id': row[0], 'translation_id': row[1],
-                                       'transcript_seq': '', 'protein_seq': '',
-                                       'chr': '', 'strand': '', '5UTR_offset': row[3], 'start_exon_rank': row[4]}
+            if row[1]!=None or three_frame_translation=='Y':
+                psm_protein_id[row[id]] = {'transcript_id': row[0], 'translation_id': row[1],
+                                           'transcript_seq': '', 'protein_seq': '',
+                                           'chr': '', 'strand': '', '5UTR_offset': row[3], 'start_exon_rank': row[4]}
+
         if process < 100:
             process += 10
             print str(process) + "% ",
-    db.close()
+
     print " "
     return ensembl_construct_sequences(psm_protein_id,mysql_database,transcript_ids,database_v,species,
                                        three_frame_translation,mode)
@@ -155,7 +159,12 @@ def ensembl_construct_sequences(psm_hash,mysql_db,transcript_ids,database_v,spec
     c=0
     for chunk in chunked_stable_transcript_id:
         # Retrieve cds,chr,transcript_id and strand from biomart
-        biomart_result=proBAM_biomart.retrieve_data_from_biomart(database_v,species,chunk,three_frame_translation)
+        try:
+            biomart_result=proBAM_biomart.retrieve_data_from_biomart(database_v,species,chunk,three_frame_translation)
+        except AttributeError:
+            time.sleep(60)
+            print "BioMart connection timeout, reconnecting to BioMart"
+            biomart_result = proBAM_biomart.retrieve_data_from_biomart(database_v, species, chunk, three_frame_translation)
         for row in biomart_result:
             row=row.split("\t")
             try:

@@ -22,10 +22,10 @@ __author__ = 'Volodimir Olexiouk'
 
 import time
 import pysam
-# the import below is needed in the OSX version
-# import pysam.libctabixproxies
 import proBAM_input
 import proBAM_ENSEMBL
+import pysam.libcutils
+import pysam.libctabixproxies
 import sys
 import os
 import proBAM_proBED
@@ -61,7 +61,7 @@ def get_parser():
     parser.add_argument('--mismatches', '-M', help='numpber of mismatches allowed during mapping',
                         required=False,default=0,choices=['0','1','2','3','4','5'],dest='allowed_mismatches')
     parser.add_argument('--version', '-V', help='ENSEMBL version to be used',
-                        required=False,default=87,choices=['74','75','76','77','78','79','80','81','82','83','84','85','86','87'],
+                        required=False,default=88,choices=['74','75','76','77','78','79','80','81','82','83','84','85','86','87','88'],
                         dest='database_v')
     parser.add_argument('--database', '-D', help='Which database has to be used (currently only ENSEMBL is available',
                         default="ENSEMBL",choices=['ENSEMBL'])
@@ -88,6 +88,8 @@ def get_parser():
                         default='proBAM_psm',choices=['proBAM_psm','proBAM_peptide','proBAM_peptide_mod','proBED'])
     parser.add_argument('--comments', '-Y', help='add a comment to the file',
                         default='')
+    parser.add_argument('--validated_only', '-A', help='only process validated PSMs',
+                        default='Y', choices=['Y','N'])
     return parser
 
 #
@@ -116,11 +118,12 @@ def get_input_variables():
     global pre_picked_annotation
     global include_unmapped
     global version
+    global validated_only
 
     ######################################
     ### VARIABLE AND INPUT DECLARATION ###
     ######################################
-    version='1.0.0'
+    version='1.0.1'
     decoy_annotation=decoy_annotation.split(',')
 
     command_line = "python proBAM.py --name " + str(name) + " --mismatches " + str(
@@ -128,6 +131,7 @@ def get_input_variables():
                    + " --database " + str(database) + " --species " + str(species) + " --file " + str(psm_file) + \
                    " --directory " + str(directory) + " --rm_duplicates " + str(rm_duplicates) + \
                    " --tri_frame_translation " + str(three_frame_translation)+\
+                   " --validated_only "+str(validated_only)+\
                    " --conversion_mode "+str(conversion_mode)
 
     # ouput variables
@@ -141,7 +145,8 @@ def get_input_variables():
             "decoy annotations:                             " + str(decoy_annotation)+"\n"+
             "sorting order:                                 " + str(sorting_order)+"\n"+
             "pre picked annotation                          " + str(pre_picked_annotation)+"\n"+
-            "conversion_mode:                               " + str(conversion_mode))
+            "conversion_mode:                               " + str(conversion_mode)+"\n"+
+            "only validated PSMs                            " + str(validated_only))
 
 #######################
 ### GETTERS/SETTERS ###
@@ -814,7 +819,7 @@ if __name__ == '__main__':
         directory=directory+'/'
 
         # hash PSM_DATA and define variables
-        psm_hash=proBAM_input.get_PSM_hash(psm_file,decoy_annotation)
+        psm_hash=proBAM_input.get_PSM_hash(psm_file,decoy_annotation,validated_only)
 
         parse_results=proBAM_IDparser.parseID(psm_hash,species,database,decoy_annotation,database_v,three_frame_translation
                                               ,pre_picked_annotation)

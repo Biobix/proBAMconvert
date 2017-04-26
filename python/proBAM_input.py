@@ -24,7 +24,7 @@ import re
 #
 # Import PSM file and parse into dictionairy
 #
-def get_PSM_hash(psm_file,decoy_annotation):
+def get_PSM_hash(psm_file,decoy_annotation,validated_only):
     '''
     :param psm_file: psm file (pepxml,mzid or mztab)
     :raise: IO error: unrecognized file format
@@ -34,7 +34,7 @@ def get_PSM_hash(psm_file,decoy_annotation):
     try:
         # catch mzid file format and parse
         if re.match('^.*\.(mzid)$',psm_file.lower())!=None:
-            PSM=proBAM_mzid.get_PSM_mzid(psm_file)
+            PSM=proBAM_mzid.get_PSM_mzid(psm_file,validated_only)
 
         # catch pepxml file format and parse
         elif re.match('^.*\.(pepxml|pep.xml|xml)$',psm_file.lower())!=None:

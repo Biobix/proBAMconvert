@@ -34,7 +34,8 @@ def _get_ensembl_archive_(version,species):
         return 'plants.ensembl.org'
     else:
         d={}
-        d[87]="www.ensembl.org"
+        d[88]="www.ensembl.org"
+        d[87]="dec2016.archive.ensembl.org"
         d[86]="oct2016.archive.ensembl.org"
         d[85]="jul2016.archive.ensembl.org"
         d[84]="mar2016.archive.ensembl.org"
