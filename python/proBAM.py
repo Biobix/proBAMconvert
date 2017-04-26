@@ -88,7 +88,7 @@ def get_parser():
                         default='proBAM_psm',choices=['proBAM_psm','proBAM_peptide','proBAM_peptide_mod','proBED'])
     parser.add_argument('--comments', '-Y', help='add a comment to the file',
                         default='')
-    parser.add_argument('--validated_only', '-A', help='only process validated PSMs',
+    parser.add_argument('--validated_only', '-A', help='only process validated PSMs (for mzIdentML',
                         default='Y', choices=['Y','N'])
     return parser
 
@@ -146,7 +146,7 @@ def get_input_variables():
             "sorting order:                                 " + str(sorting_order)+"\n"+
             "pre picked annotation                          " + str(pre_picked_annotation)+"\n"+
             "conversion_mode:                               " + str(conversion_mode)+"\n"+
-            "only validated PSMs                            " + str(validated_only))
+            "only validated PSMs (mzIdentML)                " + str(validated_only))
 
 #######################
 ### GETTERS/SETTERS ###

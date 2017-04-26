@@ -310,7 +310,7 @@ def _pre_picked_annotation(tk):
 
 def _validated_only_(tk):
     global new_validated_only
-    Label(tk, text="validated_only (MZidentMl)", background="#f2f2f2", width=30, anchor=W).grid(row=7, column=0)
+    Label(tk, text="validated_only (mzIdentML)", background="#f2f2f2", width=30, anchor=W).grid(row=7, column=0)
     new_validated_only = StringVar(tk)
     new_validated_only.set("Y")
     menu = OptionMenu(tk, new_validated_only, "Y", "N")
@@ -389,7 +389,7 @@ def _print_arguments_():
     print 'conversion mode:            '+conversion_mode.get()
     print 'pre picked annotation:      '+pre_picked_annotation
     print 'include unmapped PSMs:      '+include_unmapped
-    print 'validated only (MZidentMl): '+validated_only
+    print 'validated only (mzIdentML): '+validated_only
 
 #
 # Execute proBAMconvert
