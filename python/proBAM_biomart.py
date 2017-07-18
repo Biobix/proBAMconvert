@@ -34,7 +34,8 @@ def _get_ensembl_archive_(version,species):
         return 'plants.ensembl.org'
     else:
         d={}
-        d[88]="www.ensembl.org"
+        d[89]="www.ensembl.org"
+        d[88]="mar2017.archive.ensembl.org"
         d[87]="dec2016.archive.ensembl.org"
         d[86]="oct2016.archive.ensembl.org"
         d[85]="jul2016.archive.ensembl.org"
@@ -198,6 +199,7 @@ def id_map_ensembl(to_annotation,version,species,psm_protein_id):
                   "Please check whether Ensembl version/species were correctly supplied"
         tmp_result=tmp_result.split("\n")
         result=[]
+
         if tmp_result!=[]:
             for i in tmp_result:
                 i=i.split("\t")

@@ -55,13 +55,13 @@ def get_parser():
     '''
     :return: parser
     '''
-    parser = argparse.ArgumentParser(description=('proBAMconvert version 1.0.0'))
+    parser = argparse.ArgumentParser(description=('proBAMconvert version 1.0.2'))
     parser.add_argument('--name','-N',help='name of the project (will be determine how the output file is called',
                         required=True)
     parser.add_argument('--mismatches', '-M', help='numpber of mismatches allowed during mapping',
                         required=False,default=0,choices=['0','1','2','3','4','5'],dest='allowed_mismatches')
     parser.add_argument('--version', '-V', help='ENSEMBL version to be used',
-                        required=False,default=88,choices=['74','75','76','77','78','79','80','81','82','83','84','85','86','87','88'],
+                        required=False,default=88,choices=['74','75','76','77','78','79','80','81','82','83','84','85','86','87','88','89'],
                         dest='database_v')
     parser.add_argument('--database', '-D', help='Which database has to be used (currently only ENSEMBL is available',
                         default="ENSEMBL",choices=['ENSEMBL'])
@@ -123,7 +123,7 @@ def get_input_variables():
     ######################################
     ### VARIABLE AND INPUT DECLARATION ###
     ######################################
-    version='1.0.1'
+    version='1.0.2'
     decoy_annotation=decoy_annotation.split(',')
 
     command_line = "python proBAM.py --name " + str(name) + " --mismatches " + str(
@@ -319,7 +319,7 @@ def PSM2SAM(psm_hash,transcript_hash,exon_hash,decoy_annotation,allowed_mismatch
                                         #Mandatory proteomics specific columns added to the proBam format
                                         #
                                         #NH: number of genomic location the peptide mapping to
-                                        temp_result[11]='NH:i:*'
+                                        temp_result[11]='NH:i:-1'
                                         #XA: Whether the peptide is well annotated
                                         temp_result[12]=create_XA(phit[1])
                                         #XB: Mass error (experimental - calculated)
@@ -333,16 +333,16 @@ def PSM2SAM(psm_hash,transcript_hash,exon_hash,decoy_annotation,allowed_mismatch
                                         #XG: Petide type
                                         temp_result[17]=create_XG(phit[1])
                                         #XI: peptide intensity
-                                        temp_result[18]="XI:f:*"
+                                        temp_result[18]="XI:f:-1"
                                         #XL: number of peptides the spectrum mapping to
-                                        temp_result[19]='XL:i:*'
+                                        temp_result[19]='XL:i:-1'
                                         #XM: Modification
                                         temp_result[20]='XM:Z:'+create_XM(row['modifications'])
                                         #XN: number of mis-cleavages
                                         if 'num_missed_cleaveges' in row:
                                             temp_result[21]='XN:i:'+str(row['num_missed_cleavages'])
                                         else:
-                                            temp_result[21]='XN:i:0'
+                                            temp_result[21]='XN:i:-1'
                                         #XO: uniqueness of peptide mapping
                                         #todo figure this one out
                                         temp_result[22]='XO:Z:*'
@@ -426,7 +426,7 @@ def unannotated_PSM_to_SAM(psm,row,decoy,key,enzyme,enzyme_specificity):
     #Mandatory proteomics specific columns added to the proBam format
     #
     #NH: number of genomic location the peptide mapping to
-    temp_result[11]='NH:i:*'
+    temp_result[11]='NH:i:-1'
     #XA: Whether the peptide is well annotated
     temp_result[12]='XA:i:2'
     #XB: Mass error
@@ -443,16 +443,16 @@ def unannotated_PSM_to_SAM(psm,row,decoy,key,enzyme,enzyme_specificity):
     else:
         temp_result[17]="XG:Z:U"
     #XI: Peptide intensity
-    temp_result[18]="XI:f:*"
+    temp_result[18]="XI:f:-1"
     #XL: number of peptides the spectrum mapping to
-    temp_result[19]='XL:i:*'
+    temp_result[19]='XL:i:-1'
     #XM: Modification
     temp_result[20]='XM:Z:'+create_XM(row['modifications'])
     #XN: number of mis-cleavages
     if 'num_missed_cleavages' in row:
         temp_result[21]='XN:i:'+str(row['num_missed_cleavages'])
     else:
-        temp_result[21]='XN:i:*'
+        temp_result[21]='XN:i:-1'
     #XO: uniqueness
     temp_result[22]='XO:Z:*'
     #XP; peptide sequence
@@ -605,7 +605,7 @@ def decoy_PSM_to_SAM(psm,row,key,enzyme,enzyme_specificity):
 #
 # Create SAM header
 #
-def create_SAM_header(file,version,database,sorting_order,database_v,species,command_line,psm_file,comments):
+def create_SAM_header(file,version,database,sorting_order,database_v,species,command_line,psm_file,comments,name):
     '''
     :param file: output file
     :param version: proBAMconvert version
@@ -622,7 +622,8 @@ def create_SAM_header(file,version,database,sorting_order,database_v,species,com
         for row in SQ:
             header.append(row)
     header.append('@PG\tID:proBamPy\tVN:1.0\tCL:'+str(command_line))
-    header.append('@GA\tAS:'+str(database)+'\tVN:'+str(database_v))
+    header.append('@RG\tID:'+ str(name))
+    header.append('@CO\tAS:'+str(database)+'\tVN:'+str(database_v))
     # get comments and append comments to file
     if comments!=[]:
         for comment in comments:
@@ -720,17 +721,17 @@ def compute_NH_XL(directory,name,include_unmapped,mode):
                     if key not in peptide_hash:
                         peptide_hash[key]=[id,line[1],line[2],line[3],line[4],line[5],line[6],line[7],line[8],line[9],
                                            line[10],line[11],line[12],'XB:f:*','XC:i:*',line[15],line[16],line[17],
-                                           'XI:f:*','XL:i:*','XM:Z:*',line[21],line[22],line[23],line[24],line[25],
+                                           'XI:f:-1','XL:i:-1','XM:Z:*',line[21],line[22],line[23],line[24],line[25],
                                            line[26],line[27],line[28],line[29],line[30],line[31],line[32]]
                     if id not in score_hash:
                         score_hash[id]=1
                     else:
-                        if line[26]!='XS:f:*':
+                        if line[26]!='XS:f:-1':
                             try:
                                 if float(line[26].split('XS:f:')[1])>float(peptide_hash[key][26].split('XS:f:')[1]):
                                     peptide_hash[key][26]=line[26]
                             except:pass
-                        if line[24] != 'XQ:f:*':
+                        if line[24] != 'XQ:f:-1':
                             try:
                                 if float(line[24].split('XQ:f:')[1]) > float(peptide_hash[key][24].split('XQ:f:')[1]):
                                     peptide_hash[key][24] = line[24]
@@ -797,8 +798,8 @@ def compute_NH_XL(directory,name,include_unmapped,mode):
                 else:
                     continue
             else:
-                line=line.replace("XL:i:*","XL:i:"+str(len(xl_hash[line.split("\t")[0]])))
-                line=line.replace("NH:i:*","NH:i:"+str(len(nh_hash[nh_key_line(line)])))
+                line=line.replace("XL:i:-1","XL:i:"+str(len(xl_hash[line.split("\t")[0]])))
+                line=line.replace("NH:i:-1","NH:i:"+str(len(nh_hash[nh_key_line(line)])))
                 sam_file.write(line)
             sam_file.write("\n")
 
@@ -832,7 +833,8 @@ if __name__ == '__main__':
         # convert to SAM
         if conversion_mode!='proBED':
             file = open_sam_file(directory, name)
-            create_SAM_header(file,version, database, sorting_order, database_v, species, command_line, psm_file, comments)
+            create_SAM_header(file,version, database, sorting_order, database_v, species, command_line, psm_file,
+                              comments,name)
             PSM2SAM(psm_hash,transcript_hash,exon_hash,decoy_annotation,allowed_mismatches,file,rm_duplicates,
                     three_frame_translation,psm_file,id_map,None)
             compute_NH_XL(directory, name, include_unmapped,conversion_mode)

@@ -122,9 +122,9 @@ def _getDatabaseVersion_(tk):
     global database_v
     Label(text='Select database version',background="#f2f2f2",width=30,anchor=W).grid(row=5,column=0)
     database_v= StringVar(tk)
-    database_v.set('88')
+    database_v.set('89')
 
-    menu=OptionMenu(tk,database_v,'88','87','86','85','84','83','82','81','80','79','78','77','76',
+    menu=OptionMenu(tk,database_v,'89','88','87','86','85','84','83','82','81','80','79','78','77','76',
                                     '75','74')
     menu.config(width=15,background="#f2f2f2")
     menu.grid(row=5,column=1)
@@ -203,7 +203,7 @@ def _get_global_arguments_():
 
     comments=[]
     decoy_annotation=['REV_','DECOY_','_REVERSED','REVERSED_','_DECOY']
-    version='1.0.1'
+    version='1.0.2'
     include_unmapped='Y'
     validated_only='Y'
     three_frame_translation="N"
@@ -444,7 +444,7 @@ def execute_proBAM(root):
             file = proBAM.open_sam_file(directory, name.get())
             proBAM.create_SAM_header(file, version, database.get().upper(), sorting_order, database_v.get(),
                                      species.get().replace(' ','_'), command_line, psm_file,
-                              comments)
+                              comments, name.get())
             proBAM.PSM2SAM(psm_hash, transcript_hash, exon_hash, decoy_annotation, int(allowed_mismatches.get()),
                            file, rm_duplicates.get(),three_frame_translation,psm_file,id_map,root)
             proBAM.compute_NH_XL(directory, name.get(),include_unmapped,conversion_mode)

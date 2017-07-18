@@ -236,7 +236,7 @@ def _cal_massdiff_(calc_mass,exp_mass):
     :return: mass difference
     '''
     mass_diff=exp_mass-calc_mass
-    return mass_diff
+    return str(mass_diff)+';'+str(exp_mass)+';'+str(calc_mass)
 #
 # Extract the score for a psm
 #
@@ -256,7 +256,7 @@ def _get_score_(psm):
     if hit==1:
         return psm[hit_key]
     else:
-        return "*"
+        return "-1"
 #
 # Extract the e-value for a psm
 #
@@ -277,7 +277,7 @@ def _get_evalue_(psm):
     if hit==1:
         return psm[hit_key]
     else:
-        return "*"
+        return "-1"
 #
 # Create the modified peptide sequence
 #
@@ -346,7 +346,7 @@ def get_enzyme_mzid(psm_file):
     elif fnmatch(line, '*noenzyme*'):
         return 0
     else:
-        return "*"
+        return "-1"
 #
 # Attempt to extract the enzyme specificity from the psm_file
 #

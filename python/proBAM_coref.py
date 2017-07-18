@@ -337,7 +337,7 @@ def create_XA(mismatch):
     if mismatch==0:
         XA+='0'
     else:
-        XA+='1'
+        XA+='-1'
     return XA
 #
 # Function to analyze peptide type and create XG string

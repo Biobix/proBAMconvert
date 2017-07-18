@@ -106,7 +106,7 @@ def parseID(psm_hash,species,database,decoy_annotation,database_v,three_frame_tr
                     annotation = proBAM_ENSEMBL.prepareAnnotationENSEMBL(_get_transcript_ids_from_map(id_map), 'transcript',
                                                                          database_v, species, three_frame_translation, )
                 elif find_result[1]=="REFSEQ":
-                    id_map = _id_map_('UNIPROT_ENTRY', 'REFSEQ', protein_ID, psm_hash, species, decoy_annotation,
+                    id_map = _id_map_('REFSEQ', 'ENSEMBL', protein_ID, psm_hash, species, decoy_annotation,
                                       database_v)
                     annotation = proBAM_ENSEMBL.prepareAnnotationENSEMBL(_get_transcript_ids_from_map(id_map),
                                                                          'transcript',
@@ -275,8 +275,8 @@ def _find_annotation_(accession,species,pre_picked_annotation):
             found=1
     if (pre_picked_annotation == "First" or pre_picked_annotation == "RefSeq") and found == 0:
         if re.findall("[NX][MP][_][0-9]{9}|[NX][R][_][0-9]{6}",accession)!=[]:
-            print "Identified UNIPROT Entry Names"
-            result=[1,"UNIPROT_ENTRY","[NX][MP][_][0-9]{9}|[NX][R][_][0-9]{6}"]
+            print "Identified RefSeq IDs"
+            result=[1,"REFSEQ","[NX][MP][_][0-9]{9}|[NX][R][_][0-9]{6}"]
             found=1
     return result
 

@@ -83,7 +83,7 @@ def get_PSM_mztab(psm_file):
                                                                            psm[column_id['calc_mass_to_charge']]),
                                                 "search_score":{"score":psm[column_id['search_engine_score[1]']],
                                                                 "evalue":_get_evalue_(psm,column_id)},
-                                                "proteins":proteins,"num_missed_cleavages":"*"})
+                                                "proteins":proteins,"num_missed_cleavages":"-1"})
                 if 'uri' in column_id.keys():
                     temp_hash['search_hit']['uri']=psm[column_id['uri']]
             psm_hash.append(temp_hash)
@@ -113,7 +113,7 @@ def _get_evalue_(psm,column_id):
     if 'fdr' in column_id.keys():
         return psm[column_id['fdr']]
     else:
-        return '*'
+        return '-1'
 #
 # calculates massdiff
 #
@@ -126,7 +126,7 @@ def _calc_massdiff_(exp_mass,calc_mass):
     if exp_mass=="" and calc_mass=="":
         return "*"
     else:
-        return float(exp_mass)-float(calc_mass)
+        return str(float(exp_mass)-float(calc_mass))+';'+str(exp_mass)+';'+str(calc_mass)
 #
 # connect to unimod DB, parse and store in dict
 #
@@ -280,7 +280,7 @@ def get_enzyme_specificity_mztab(psm_file):
 # Extract enzyme specificity from mzTab
 #
 def get_enzyme_mztab(psm_file):
-    return "*"
+    return "-1"
 #
 # Connect to psimod, parse IDs and store in dict
 #

@@ -32,8 +32,10 @@ def get_PSM_pepxml(psm_file):
         # adjust search scores
         if 'search_hit' in row.keys():
             for search_hit in row['search_hit']:
+                search_hit['massdiff']=str(search_hit['massdiff'])+';'+str(search_hit['calc_neutral_pep_mass'])+';'+str(row['precursor_neutral_mass'])
                 search_hit['search_score']={'score':_get_score_(search_hit['search_score']),
                                                         'evalue':_get_evalue_(search_hit['search_score'])}
+
 
         # if count==5500:
         #    break
@@ -91,7 +93,7 @@ def get_enzyme_pepxml(psm_file):
             elif fnmatch(line, '*no?enzyme*'):
                 return 0
                 break
-    return "*"
+    return "-1"
 
 #
 # Attempts to extract enzyme specificity information from the pepXML file
@@ -161,7 +163,7 @@ def _get_score_(search_score):
     if hit == 1:
         return  search_score[hit_key]
     else:
-        return "*"
+        return "-1"
 #
 # retrieve the evalue for a psm
 #
@@ -183,4 +185,6 @@ def _get_evalue_(search_score):
     if hit == 1:
         return search_score[hit_key]
     else:
-        return "*"
+        return "-1"
+
+get_PSM_pepxml('/home/vladie/Desktop/test.pep.xml')
