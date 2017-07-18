@@ -186,5 +186,3 @@ def _get_evalue_(search_score):
         return search_score[hit_key]
     else:
         return "-1"
-
-get_PSM_pepxml('/home/vladie/Desktop/test.pep.xml')
