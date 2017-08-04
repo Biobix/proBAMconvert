@@ -74,10 +74,14 @@ def prepareAnnotationENSEMBL(psm_protein_id,mode,database_v,species,three_frame_
         db = MySQLdb.connect(host='ensembldb.ensembl.org',user='anonymous',passwd='',port=3306,db=mysql_database)
         cur = db.cursor()
     except:
-        print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
-        db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306,db=mysql_database)
-        cur = db.cursor()
-        pass
+        try:
+            print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
+            db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306,db=mysql_database)
+            cur = db.cursor()
+        except:
+            print "could not connect to Ensembl, check firewall/internet connection"
+            raise
+
 
     chunked_psm_protein_id=chunkIt(psm_protein_id,10)
     process=0
@@ -273,10 +277,13 @@ def get_ensembl_exons(mysql_database,transcript_ids,psm_hash,mode):
         db = MySQLdb.connect(host='ensembldb.ensembl.org',user='anonymous',passwd='',port=3306, db=mysql_database)
         cur = db.cursor()
     except:
-        print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
-        db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306, db=mysql_database)
-        cur = db.cursor()
-        pass
+        try:
+            print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
+            db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306, db=mysql_database)
+            cur = db.cursor()
+        except:
+            print "could not connect to Ensembl, check firewall/internet connection"
+            raise
     for chunk in chunked_transcript_ids:
         first=1
         where_clause='WHERE '
@@ -333,10 +340,13 @@ def create_SQ_header(database_v,species):
         db = MySQLdb.connect(host='ensembldb.ensembl.org',user='anonymous',passwd='',port=3306)
         cur = db.cursor()
     except:
-        print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
-        db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306)
-        cur = db.cursor()
-        pass
+        try:
+            print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
+            db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306)
+            cur = db.cursor()
+        except:
+            print "could not connect to Ensembl, check firewall/internet connection"
+            raise
 
     cur.execute('show databases')
     for row in cur.fetchall():
@@ -348,10 +358,13 @@ def create_SQ_header(database_v,species):
         db = MySQLdb.connect(host='ensembldb.ensembl.org',user='anonymous',passwd='',port=3306, db=mysql_database)
         cur = db.cursor()
     except:
-        print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
-        db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306, db=mysql_database)
-        cur = db.cursor()
-        pass
+        try:
+            print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
+            db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306, db=mysql_database)
+            cur = db.cursor()
+        except:
+            print "could not connect to Ensembl, check firewall/internet connection"
+            raise
     cur.execute("select seq_region.name,seq_region.length,coord_system.version FROM seq_region LEFT JOIN coord_system "
                 "ON coord_system.coord_system_id=seq_region.coord_system_id WHERE coord_system.rank=1")
     for row in cur.fetchall():
@@ -378,10 +391,13 @@ def get_genome_version(database_v,species):
         db = MySQLdb.connect(host='ensembldb.ensembl.org',user='anonymous',passwd='',port=3306)
         cur = db.cursor()
     except:
-        print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
-        db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306)
-        cur = db.cursor()
-        pass
+        try:
+            print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
+            db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306)
+            cur = db.cursor()
+        except:
+            print "could not connect to Ensembl, check firewall/internet connection"
+            raise
 
     cur.execute('show databases')
     for row in cur.fetchall():
@@ -393,10 +409,13 @@ def get_genome_version(database_v,species):
         db = MySQLdb.connect(host='ensembldb.ensembl.org',user='anonymous',passwd='',port=3306, db=mysql_database)
         cur = db.cursor()
     except:
-        print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
-        db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306, db=mysql_database)
-        cur = db.cursor()
-        pass
+        try:
+            print "Could not connect to Ensembl trough port 3306, attempting to connect trough port 5306"
+            db = MySQLdb.connect(host='ensembldb.ensembl.org', user='anonymous', passwd='', port=5306, db=mysql_database)
+            cur = db.cursor()
+        except:
+            print "could not connect to Ensembl, check firewall/internet connection"
+            raise
 
     cur.execute("SELECT version from coord_system where rank=1")
 
