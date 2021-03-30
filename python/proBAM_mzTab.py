@@ -19,7 +19,8 @@ __author__ = 'vladie'
 
 import csv
 from pyteomics import mass
-
+import os
+import sys
 #
 # Parse mztab file into dictionairy
 #
@@ -347,9 +348,7 @@ def _psimod_xml_parser_():
     # parse and store psimod data
     import urllib2
     from lxml import etree
-    data = urllib2.urlopen(
-        "https://raw.githubusercontent.com/HUPO-PSI/psi-mod-CV/master/PSI-MOD.obo.xml"
-    )
+    data = open(os.path.join(sys.path[0], "PSI-MOD.obo.xml"), "r")
     root = etree.parse(data)
     root2 = etree.tostring(root)
     for term in root.xpath('//term'):

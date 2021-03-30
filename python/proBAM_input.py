@@ -31,32 +31,32 @@ def get_PSM_hash(psm_file,decoy_annotation,validated_only):
     :return: dictionairy of parsed psm file,
     '''
     print "Reading PSM-file"
-    try:
+    # try:
         # catch mzid file format and parse
-        if re.match('^.*\.(mzid)$',psm_file.lower())!=None:
-            PSM=proBAM_mzid.get_PSM_mzid(psm_file,validated_only)
+    if re.match('^.*\.(mzid)$',psm_file.lower())!=None:
+        PSM=proBAM_mzid.get_PSM_mzid(psm_file,validated_only)
 
-        # catch pepxml file format and parse
-        elif re.match('^.*\.(pepxml|pep.xml|xml)$',psm_file.lower())!=None:
-            PSM=proBAM_pepxml.get_PSM_pepxml(psm_file)
+    # catch pepxml file format and parse
+    elif re.match('^.*\.(pepxml|pep.xml|xml)$',psm_file.lower())!=None:
+        PSM=proBAM_pepxml.get_PSM_pepxml(psm_file)
 
 
-        # catch mztab file format and parse
-        elif re.match('^.*\.(mztab)$',psm_file.lower())!=None:
-            PSM=proBAM_mzTab.get_PSM_mztab(psm_file)
+    # catch mztab file format and parse
+    elif re.match('^.*\.(mztab)$',psm_file.lower())!=None:
+        PSM=proBAM_mzTab.get_PSM_mztab(psm_file)
 
-        else:
-            raise IOError('Unrecognized file extension, \n ' \
-                  'Accepted file extensions: .mzid/.pepxml/.pep.xml/.xml')
+    else:
+        raise IOError('Unrecognized file extension, \n ' \
+              'Accepted file extensions: .mzid/.pepxml/.pep.xml/.xml')
 
-    except Exception as e:
-        print "ERROR: Unable to  the PSM file : \n"
-        print e.__doc__
-        print e.message
-        print "\nPlease confirm that the file is conform with the document specification." \
-              "If the error keeps occuring contact the developers at https://github.com/Biobix/proBAMconvert/issues " \
-              "and supply this error message along with the file and used settings"
-        raise IOError()
+    # except Exception as e:
+    #     print "ERROR: Unable to  the PSM file : \n"
+    #     print e.__doc__
+    #     print e.message
+    #     print "\nPlease confirm that the file is conform with the document specification." \
+    #           "If the error keeps occuring contact the developers at https://github.com/Biobix/proBAMconvert/issues " \
+    #           "and supply this error message along with the file and used settings"
+    #     raise IOError()
 
 
 
